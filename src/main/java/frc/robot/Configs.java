@@ -1,8 +1,7 @@
 package frc.robot;
 
 import com.revrobotics.spark.config.SparkMaxConfig;
-import com.revrobotics.spark.FeedbackSensor;
-import com.revrobotics.spark.config.AbsoluteEncoderConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import frc.robot.Constants.ModuleConstants;
@@ -12,13 +11,13 @@ public final class Configs {
         public static final SparkMaxConfig drivingConfig = new SparkMaxConfig();
         public static final SparkMaxConfig turningConfig = new SparkMaxConfig();
 
+
         static {
             // Use module constants to calculate conversion factors and feed forward gain.
             double drivingFactor = ModuleConstants.kWheelDiameterMeters * Math.PI
                     / ModuleConstants.kDrivingMotorReduction;
             double turningFactor = 2 * Math.PI;
-            double nominalVoltage = 12.0;
-            double drivingVelocityFeedForward = nominalVoltage / ModuleConstants.kDriveWheelFreeSpeedRps;
+            double drivingVelocityFeedForward = 1 / ModuleConstants.kDriveWheelFreeSpeedRps;
 
             drivingConfig
                     .idleMode(IdleMode.kBrake)
@@ -30,22 +29,18 @@ public final class Configs {
                     .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
                     // These are example gains you may need to them for your own robot!
                     .pid(0.04, 0, 0)
-                    .outputRange(-1, 1)
-                    .feedForward.kV(drivingVelocityFeedForward);
+                    .velocityFF(drivingVelocityFeedForward)
+                    .outputRange(-1, 1);
 
             turningConfig
                     .idleMode(IdleMode.kBrake)
                     .smartCurrentLimit(20);
-
             turningConfig.absoluteEncoder
                     // Invert the turning encoder, since the output shaft rotates in the opposite
                     // direction of the steering motor in the MAXSwerve Module.
                     .inverted(true)
                     .positionConversionFactor(turningFactor) // radians
-                    .velocityConversionFactor(turningFactor / 60.0) // radians per second
-                    // This applies to REV Through Bore Encoder V2 (use REV_ThroughBoreEncoder for V1):
-                    .apply(AbsoluteEncoderConfig.Presets.REV_ThroughBoreEncoderV2);
-
+                    .velocityConversionFactor(turningFactor / 60.0); // radians per second
             turningConfig.closedLoop
                     .feedbackSensor(FeedbackSensor.kAbsoluteEncoder)
                     // These are example gains you may need to them for your own robot!
@@ -58,5 +53,20 @@ public final class Configs {
                     .positionWrappingEnabled(true)
                     .positionWrappingInputRange(0, turningFactor);
         }
+    }
+
+    public static final class Elevator {
+
+        public static final SparkMaxConfig elevatorConfig = new SparkMaxConfig();
+
+        static {
+
+                elevatorConfig
+                        .idleMode(IdleMode.kBrake)
+                        .smartCurrentLimit(50);
+
+
+        }
+
     }
 }
