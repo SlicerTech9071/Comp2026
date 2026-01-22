@@ -4,10 +4,14 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degree;
+import static edu.wpi.first.units.Units.Degrees;
+
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -103,7 +107,20 @@ public final class Constants {
   public static final class ShooterConstants {
     public static final int flyWheelMotorid = 1;
     public static final int turningMotorid = 2;
+
+    public static final Angle shooterAngleOffset = Degree.of(90);
+    public static final double shooterDistanceCenter = 0.5;
+
+    public static final String limelightName = "";
+    public static final Angle limelightMountAngle = Degrees.of(45);
+    public static final double limelightHeight = 0.5;
+    public static final double limelightDistanceCenter = 0.5;
   }
 
+  public static final class AprilTags {
+    public static final class AprilTag10 {
+      public static final double height = 1;
+    }
+  }
 }
 

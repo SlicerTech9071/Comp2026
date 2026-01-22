@@ -1,12 +1,26 @@
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkMax;
+
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Radians;
+
+import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ShooterConstants;
+import frc.robot.Constants.AprilTags.AprilTag10;
+import frc.robot.LimelightHelpers.RawFiducial;
+import frc.robot.Constants.AprilTags;
+
+import edu.wpi.first.units.measure.Angle;
+
+import frc.robot.LimelightHelpers;
 
 public class ShooterSubsystem extends SubsystemBase {
     SparkMax flyWheelMotor;
@@ -15,12 +29,55 @@ public class ShooterSubsystem extends SubsystemBase {
     SparkMaxConfig turningMotorConfig;
     AbsoluteEncoder turningEncoder;
 
+    private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
     public ShooterSubsystem() {
         flyWheelMotor = new SparkMax(ShooterConstants.flyWheelMotorid, MotorType.kBrushless);
         turningMotor = new SparkMax(ShooterConstants.turningMotorid, MotorType.kBrushless);
         flyWheelMotorConfig = new SparkMaxConfig();
         turningMotorConfig = new SparkMaxConfig();
         turningEncoder = turningMotor.getAbsoluteEncoder();
+
+    }
+
+    public double yDistanceToFidicual(double tync) {
+        double h = AprilTags.AprilTag10.height - ShooterConstants.limelightHeight;
+        double angle = Math.tan(tync + ShooterConstants.limelightMountAngle.in(Radians));
+        return h/angle;   
+    }
+
+    public double xDistanceToFidicual(double txnc, double dy, double gyroAngle) {
+        return dy * Math.tan(gyroAngle - txnc);
+    }
+
+    public double xCameraShooterOffset(double gyroAngle) {
+        return ShooterConstants.limelightDistanceCenter*Math.sin(gyroAngle) + ShooterConstants.shooterDistanceCenter*Math.sin(gyroAngle+ShooterConstants.shooterAngleOffset.in(Radians));
+    }
+    public double yCameraShooterOffset(double gyroAngle) {
+        return ShooterConstants.limelightDistanceCenter*Math.cos(gyroAngle) + ShooterConstants.shooterDistanceCenter*Math.cos(gyroAngle+ShooterConstants.shooterAngleOffset.in(Radians));
+    }
+
+    public double shooterAngleToTarget() {
+        try {
+            RawFiducial[] fiducials = LimelightHelpers.getRawFiducials(ShooterConstants.limelightName);
+            for (RawFiducial fiducial : fiducials){
+                if ( fiducial.id == 10){
+                    double o_x = xCameraShooterOffset(getAngle().in(Radians));
+                    double o_y = yCameraShooterOffset(getAngle().in(Radians));
+
+                    double d_y = yDistanceToFidicual(fiducial.tync);
+                    double d_x = xDistanceToFidicual(fiducial.txnc, d_y, getAngle().in(Radians));
+
+                    return Math.atan2(d_x + o_x, AprilTag10.height + d_y + o_y);
+                }
+            }
+        } catch (Exception e){
+            System.out.println("LimelightError: ShooterSub Line: 59");
+        }
+    }
+
+    public Angle getAngle() {
+        Angle angle = Degrees.of(m_gyro.getAngle());
+        return angle;
     }
 
     @Override
