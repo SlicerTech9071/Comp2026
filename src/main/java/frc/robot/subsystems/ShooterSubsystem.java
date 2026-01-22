@@ -15,6 +15,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.AprilTags.AprilTag10;
+import frc.robot.Constants.AprilTags.AprilTag2;
+import frc.robot.Constants.AprilTags.AprilTag5;
 import frc.robot.LimelightHelpers.RawFiducial;
 import frc.robot.Constants.AprilTags;
 
@@ -39,8 +41,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     }
 
-    public double yDistanceToFidicual(double tync) {
-        double h = AprilTags.AprilTag10.height - ShooterConstants.limelightHeight;
+    public double yDistanceToFidicual(double tync, double fidicualHeight) {
+        double h = fidicualHeight - ShooterConstants.limelightHeight;
         double angle = Math.tan(tync + ShooterConstants.limelightMountAngle.in(Radians));
         return h/angle;   
     }
@@ -64,10 +66,26 @@ public class ShooterSubsystem extends SubsystemBase {
                     double o_x = xCameraShooterOffset(getAngle().in(Radians));
                     double o_y = yCameraShooterOffset(getAngle().in(Radians));
 
-                    double d_y = yDistanceToFidicual(fiducial.tync);
+                    double d_y = yDistanceToFidicual(fiducial.tync, AprilTag10.height);
                     double d_x = xDistanceToFidicual(fiducial.txnc, d_y, getAngle().in(Radians));
 
-                    return Math.atan2(d_x + o_x, AprilTag10.height + d_y + o_y);
+                    return Math.atan2(d_x + o_x, AprilTag10.yDis + d_y + o_y);
+                }else if (fiducial.id == 5){
+                    double o_x = xCameraShooterOffset(getAngle().in(Radians));
+                    double o_y = yCameraShooterOffset(getAngle().in(Radians));
+
+                    double d_y = yDistanceToFidicual(fiducial.tync, AprilTag5.height);
+                    double d_x = xDistanceToFidicual(fiducial.txnc, d_y, getAngle().in(Radians));
+
+                    return Math.atan2(d_x + o_x + AprilTag5.xDis, d_y + o_y);
+                } else if (fiducial.id == 2){
+                    double o_x = xCameraShooterOffset(getAngle().in(Radians));
+                    double o_y = yCameraShooterOffset(getAngle().in(Radians));
+
+                    double d_y = yDistanceToFidicual(fiducial.tync, AprilTag2.height);
+                    double d_x = xDistanceToFidicual(fiducial.txnc, d_y, getAngle().in(Radians));
+
+                    return Math.atan2(d_x + o_x + AprilTag2.xDis, d_y + o_y);
                 }
             }
         } catch (Exception e){
