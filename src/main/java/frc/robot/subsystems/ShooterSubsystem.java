@@ -4,10 +4,13 @@ import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.apriltag.AprilTag;
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -29,7 +32,11 @@ public class ShooterSubsystem extends SubsystemBase {
     SparkMax turningMotor;
     SparkMaxConfig flyWheelMotorConfig;
     SparkMaxConfig turningMotorConfig;
+    
+    RelativeEncoder flyWheelEncoder;
     AbsoluteEncoder turningEncoder;
+
+    PIDController flyWheelPID;
 
     private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
     public ShooterSubsystem() {
@@ -37,8 +44,11 @@ public class ShooterSubsystem extends SubsystemBase {
         turningMotor = new SparkMax(ShooterConstants.turningMotorid, MotorType.kBrushless);
         flyWheelMotorConfig = new SparkMaxConfig();
         turningMotorConfig = new SparkMaxConfig();
+        
+        flyWheelEncoder = flyWheelMotor.getEncoder();
         turningEncoder = turningMotor.getAbsoluteEncoder();
 
+        flyWheelPID = new PIDController(0, 0, 0);
     }
 
     public double yDistanceToFidicual(double tync, double fidicualHeight) {
@@ -52,10 +62,10 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public double xCameraShooterOffset(double gyroAngle) {
-        return ShooterConstants.limelightDistanceCenter*Math.sin(gyroAngle) + ShooterConstants.shooterDistanceCenter*Math.sin(gyroAngle+ShooterConstants.shooterAngleOffset.in(Radians));
+        return ShooterConstants.limelightDistanceCenter*Math.sin(gyroAngle) - ShooterConstants.shooterDistanceCenter*Math.sin(gyroAngle+ShooterConstants.shooterAngleOffset.in(Radians));
     }
     public double yCameraShooterOffset(double gyroAngle) {
-        return ShooterConstants.limelightDistanceCenter*Math.cos(gyroAngle) + ShooterConstants.shooterDistanceCenter*Math.cos(gyroAngle+ShooterConstants.shooterAngleOffset.in(Radians));
+        return ShooterConstants.limelightDistanceCenter*Math.cos(gyroAngle) - ShooterConstants.shooterDistanceCenter*Math.cos(gyroAngle+ShooterConstants.shooterAngleOffset.in(Radians));
     }
 
     public double shooterAngleToTarget() {
@@ -111,5 +121,20 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Turning Anlge", turningEncoder.getPosition());
+        SmartDashboard.putNumber("FlyWheel RPM", flyWheelEncoder.getVelocity());
+    }
+
+    public void runFlyWheel(double speed) {
+        flyWheelMotor.set(speed);
+    }
+
+    public void setRPM(double RPM) {
+        flyWheelPID.setSetpoint(RPM);
+    }
+
+    public void runFlyWheel() {
+        double output = flyWheelPID.calculate(flyWheelEncoder.getVelocity());
+        output = MathUtil.clamp(output, 0, 1);
+        runFlyWheel(output);
     }
 }
