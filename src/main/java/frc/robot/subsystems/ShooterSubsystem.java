@@ -3,6 +3,9 @@ import com.revrobotics.spark.SparkMax;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Radians;
 
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
+
 import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -38,7 +41,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     PIDController flyWheelPID;
 
-    private final ADIS16470_IMU m_gyro = new ADIS16470_IMU();
+    private final AHRS m_gyro = new AHRS(NavXComType.kMXP_SPI);
     public ShooterSubsystem() {
         flyWheelMotor = new SparkMax(ShooterConstants.flyWheelMotorid, MotorType.kBrushless);
         turningMotor = new SparkMax(ShooterConstants.turningMotorid, MotorType.kBrushless);
