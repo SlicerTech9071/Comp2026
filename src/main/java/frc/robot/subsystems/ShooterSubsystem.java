@@ -67,7 +67,7 @@ public class ShooterSubsystem extends SubsystemBase {
         flyWheelEncoder = flyWheelMotor.getEncoder();
         turningEncoder = turningMotor.getAbsoluteEncoder();
 
-        flyWheelPID = new PIDController(0, 0, 0);
+        flyWheelPID = new PIDController(ShooterConstants.flyWheelkP, 0, 0);
     }
 
     public double yDistanceToFidicual(double tync, double fidicualHeight) {
@@ -158,7 +158,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public void runFlyWheel() {
-        double output = flyWheelPID.calculate(flyWheelEncoder.getVelocity());
+        double output = flyWheelPID.calculate(flyWheelEncoder.getVelocity()) + ShooterConstants.flyWheelfeedFoward;
         output = MathUtil.clamp(output, 0, 1);
         runFlyWheel(output);
     }
