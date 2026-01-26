@@ -7,9 +7,13 @@ import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
 import com.revrobotics.AbsoluteEncoder;
+import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
+import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.ResetMode;
 
 import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.MathUtil;
@@ -35,7 +39,7 @@ public class ShooterSubsystem extends SubsystemBase {
     SparkMax turningMotor;
     SparkMaxConfig flyWheelMotorConfig;
     SparkMaxConfig turningMotorConfig;
-    
+
     RelativeEncoder flyWheelEncoder;
     AbsoluteEncoder turningEncoder;
 
@@ -45,9 +49,21 @@ public class ShooterSubsystem extends SubsystemBase {
     public ShooterSubsystem() {
         flyWheelMotor = new SparkMax(ShooterConstants.flyWheelMotorid, MotorType.kBrushless);
         turningMotor = new SparkMax(ShooterConstants.turningMotorid, MotorType.kBrushless);
-        flyWheelMotorConfig = new SparkMaxConfig();
+        flyWheelMotorConfig = new SparkMaxConfig(); 
         turningMotorConfig = new SparkMaxConfig();
-        
+
+        flyWheelMotorConfig
+        .inverted(false)
+        .idleMode(IdleMode.kCoast)
+        .smartCurrentLimit(50);
+        turningMotorConfig
+        .inverted(false)
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(50);
+
+        flyWheelMotor.configure(flyWheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        turningMotor.configure(turningMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
         flyWheelEncoder = flyWheelMotor.getEncoder();
         turningEncoder = turningMotor.getAbsoluteEncoder();
 
