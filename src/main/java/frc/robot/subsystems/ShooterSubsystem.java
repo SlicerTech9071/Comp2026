@@ -119,6 +119,7 @@ public class ShooterSubsystem extends SubsystemBase {
                         aprilTagYDis = AprilTag10.yDis;
                         break;
                     default:
+                        System.out.println("Could not find fiducial/AprilTag");
                         break;
                 }
                 if (fiducial.id == 2 || fiducial.id == 5 || fiducial.id == 10){
@@ -149,17 +150,19 @@ public class ShooterSubsystem extends SubsystemBase {
         SmartDashboard.putNumber("FlyWheel RPM", flyWheelEncoder.getVelocity());
     }
 
-    public void runFlyWheel(double speed) {
+    public void runFlyWheelMotor(double speed) {
         flyWheelMotor.set(speed);
     }
 
     public void setRPM(double RPM) {
-        flyWheelPID.setSetpoint(RPM);
+        if (RPM < 4000){
+            flyWheelPID.setSetpoint(RPM);
+        }
     }
 
     public void runFlyWheel() {
         double output = flyWheelPID.calculate(flyWheelEncoder.getVelocity()) + ShooterConstants.flyWheelfeedFoward;
         output = MathUtil.clamp(output, 0, 1);
-        runFlyWheel(output);
+        runFlyWheelMotor(output);
     }
 }
