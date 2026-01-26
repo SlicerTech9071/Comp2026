@@ -83,6 +83,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public double xCameraShooterOffset(double gyroAngle) {
         return ShooterConstants.limelightDistanceCenter*Math.sin(gyroAngle) - ShooterConstants.shooterDistanceCenter*Math.sin(gyroAngle+ShooterConstants.shooterAngleOffset.in(Radians));
     }
+
     public double yCameraShooterOffset(double gyroAngle) {
         return ShooterConstants.limelightDistanceCenter*Math.cos(gyroAngle) - ShooterConstants.shooterDistanceCenter*Math.cos(gyroAngle+ShooterConstants.shooterAngleOffset.in(Radians));
     }
@@ -96,36 +97,41 @@ public class ShooterSubsystem extends SubsystemBase {
             double d_y;
             double d_x;
 
+            double aprilTagHeight;
+            double aprilTagXDis;
+            double aprilTagYDis;
+
             for (RawFiducial fiducial : fiducials){
                 switch (fiducial.id) {
                     case 2:
-                        o_x = xCameraShooterOffset(getAngle().in(Radians));
-                        o_y = yCameraShooterOffset(getAngle().in(Radians));
-
-                        d_y = yDistanceToFidicual(fiducial.tync, AprilTag2.height);
-                        d_x = xDistanceToFidicual(fiducial.txnc, d_y, getAngle().in(Radians));
-
-                        return Math.atan2(d_x + o_x + AprilTag2.xDis, d_y + o_y);
+                        aprilTagHeight = AprilTag2.height;
+                        aprilTagXDis = AprilTag2.xDis;
+                        aprilTagYDis = 0;
+                        break;
                     case 5:
-                        o_x = xCameraShooterOffset(getAngle().in(Radians));
-                        o_y = yCameraShooterOffset(getAngle().in(Radians));
-
-                        d_y = yDistanceToFidicual(fiducial.tync, AprilTag5.height);
-                        d_x = xDistanceToFidicual(fiducial.txnc, d_y, getAngle().in(Radians));
-
-                        return Math.atan2(d_x + o_x + AprilTag5.xDis, d_y + o_y);
+                        aprilTagHeight = AprilTag5.height;
+                        aprilTagXDis = AprilTag5.xDis;
+                        aprilTagYDis = 0;
+                        break;
                     case 10:
-                        o_x = xCameraShooterOffset(getAngle().in(Radians));
-                        o_y = yCameraShooterOffset(getAngle().in(Radians));
-
-                        d_y = yDistanceToFidicual(fiducial.tync, AprilTag10.height);
-                        d_x = xDistanceToFidicual(fiducial.txnc, d_y, getAngle().in(Radians));
-
-                        return Math.atan2(d_x + o_x, AprilTag10.yDis + d_y + o_y);
+                        aprilTagHeight = AprilTag10.height;
+                        aprilTagXDis = 0;
+                        aprilTagYDis = AprilTag10.yDis;
+                        break;
                     default:
                         break;
                 }
+                if (fiducial.id == 2 || fiducial.id == 5 || fiducial.id == 10){
+                    o_x = xCameraShooterOffset(getAngle().in(Radians));
+                    o_y = yCameraShooterOffset(getAngle().in(Radians));
+
+                    d_y = yDistanceToFidicual(fiducial.tync, aprilTagHeight);
+                    d_x = xDistanceToFidicual(fiducial.txnc, d_y, getAngle().in(Radians));
+
+                    return Math.atan2(d_x + o_x + aprilTagXDis, d_y + o_y + aprilTagYDis);
+                }
             }
+
         } catch (Exception e){
             System.out.println("LimelightError: ShooterSub Line: 59");
         }
