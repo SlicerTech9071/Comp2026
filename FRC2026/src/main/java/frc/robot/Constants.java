@@ -1,17 +1,14 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
+//test
 
 package frc.robot;
-
-import static edu.wpi.first.units.Units.Degree;
-import static edu.wpi.first.units.Units.Degrees;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
-import edu.wpi.first.units.measure.Angle;
 
 /**
  * The Constants class provides a convenient place for teams to hold robot-wide
@@ -29,13 +26,19 @@ public final class Constants {
   public static final class DriveConstants {
     // Driving Parameters - Note that these are not the maximum capable speeds of
     // the robot, rather the allowed maximum speeds
-    public static final double kMaxSpeedMetersPerSecond = 4.8;
-    public static final double kMaxAngularSpeed = 2 * Math.PI; // radians per second
+    public static final double kMaxSpeedMetersPerSecond = 2;
+    public static final double kMaxAngularSpeed = 3 * Math.PI; // radians per second
+
+
+    public static final double kDirectionSlewRate = 1.2; // radians per second
+    public static final double kMagnitudeSlewRate = 1.8; // percent per second (1 = 100%)
+
+    public static final double kElevatorSpeed = 2;
 
     // Chassis configuration
-    public static final double kTrackWidth = Units.inchesToMeters(26.5);
+    public static final double kTrackWidth = Units.inchesToMeters(24.5);
     // Distance between centers of right and left wheels on robot
-    public static final double kWheelBase = Units.inchesToMeters(26.5);
+    public static final double kWheelBase = Units.inchesToMeters(24.5);
     // Distance between front and back wheels on robot
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2),
@@ -60,6 +63,9 @@ public final class Constants {
     public static final int kFrontRightTurningCanId = 14;
     public static final int kRearRightTurningCanId = 16;
 
+    public static final int rightElevatorCanId = 6;
+    public static final int leftElecatorCanId = 7;
+
     public static final boolean kGyroReversed = false;
   }
 
@@ -82,7 +88,10 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
-    public static final double kDriveDeadband = 0.05;
+    public static final double kDriveDeadband = 0.50;
+
+    public static final int kOperatorControllerPort = 1;
+    public static final double kOperatorDeadband = 0.5;
   }
 
   public static final class AutoConstants {
@@ -108,31 +117,18 @@ public final class Constants {
     public static final int flyWheelMotorid = 1;
     public static final int turningMotorid = 2;
 
-    public static final double flyWheelfeedFoward = 0;
-    public static final double flyWheelkP = 0;
+    public static final double shooterDistance = 0.1;
+    public static final double shooterAngularOffset = 135;
 
-    public static final Angle shooterAngleOffset = Degree.of(90);
-    public static final double shooterDistanceCenter = 0.5;
-
-    public static final String limelightName = "";
-    public static final Angle limelightMountAngle = Degrees.of(45);
-    public static final double limelightHeight = 0.5;
-    public static final double limelightDistanceCenter = 0.5;
+    public static final double limeLightMountAngle = 45;
+    public static final double limeLightMountHeight = 0.1;
+    public static final double limeLightMountDistance = 0.1;
   }
 
-  public static final class AprilTags {
+  public static final class AprilTagConstants {
     public static final class AprilTag10 {
       public static final double height = 1;
-      public static final double yDis = 0.5;
-    }
-      public static final class AprilTag5 {
-      public static final double height = 1;
-      public static final double xDis = 0.5;
-    }
-      public static final class AprilTag2 {
-      public static final double height = 1;
-      public static final double xDis = -0.5;
+      public static final double distanceToGoal = 0.5;
     }
   }
 }
-
