@@ -1,3 +1,5 @@
+package frc.robot.subsystems;
+
 import com.revrobotics.spark.SparkMax;
 
 import static edu.wpi.first.units.Units.Degrees;
@@ -10,16 +12,12 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.ResetMode;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -28,7 +26,6 @@ import frc.robot.Constants.AprilTags.AprilTag10;
 import frc.robot.Constants.AprilTags.AprilTag2;
 import frc.robot.Constants.AprilTags.AprilTag5;
 import frc.robot.LimelightHelpers.RawFiducial;
-import frc.robot.Constants.AprilTags;
 
 import edu.wpi.first.units.measure.Angle;
 
@@ -139,15 +136,15 @@ public class ShooterSubsystem extends SubsystemBase {
         return 0;
     }
 
-    public Angle getAngle() {
-        Angle angle = Degrees.of(m_gyro.getAngle());
-        return angle;
-    }
-
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Turning Anlge", turningEncoder.getPosition());
         SmartDashboard.putNumber("FlyWheel RPM", flyWheelEncoder.getVelocity());
+    }
+
+    public Angle getAngle() {
+        Angle angle = Degrees.of(m_gyro.getAngle());
+        return angle;
     }
 
     public void runFlyWheelMotor(double speed) {
