@@ -89,4 +89,5 @@ public class RobotContainer {
    */
   public Command getAutonomousCommand() {
     return new PathPlannerAuto("null");
+    }
 }
