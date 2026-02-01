@@ -120,6 +120,11 @@ public final class Constants {
     public static final double limelightDistanceCenter = 0.5;
   }
 
+  public static final class intakeConstants {
+    public static final int intakeMotorid = 11;
+    public static final int pivotMotorid = 12;
+  }
+
   public static final class AprilTags {
     public static final class AprilTag10 {
       public static final double height = 1;

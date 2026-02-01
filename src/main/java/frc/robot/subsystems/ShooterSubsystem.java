@@ -97,9 +97,9 @@ public class ShooterSubsystem extends SubsystemBase {
             double d_y;
             double d_x;
 
-            double aprilTagHeight;
-            double aprilTagXDis;
-            double aprilTagYDis;
+            double aprilTagHeight = 0;
+            double aprilTagXDis = 0;
+            double aprilTagYDis = 0;
 
             for (RawFiducial fiducial : fiducials){
                 switch (fiducial.id) {
