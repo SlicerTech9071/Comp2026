@@ -135,15 +135,32 @@ public class ShooterSubsystem extends SubsystemBase {
         }
         return 0;
     }
+    //Adjust theta calculation with the robot velocity in mind.
+    public double adjustAngleForRobotSpeed(double theta, double robotXVel, double robotYVel, double ballSpeed) {
+        return theta - Math.asin(((robotXVel + Math.tan(theta)*robotYVel)*Math.cos(theta))/ballSpeed);
+    }
+
+    public double calcTurningAngle() {
+        double ballVelo = ShooterConstants.ballVelo;
+        double theta = shooterAngleToTarget();
+        theta = adjustAngleForRobotSpeed(theta, m_gyro.getVelocityX(), m_gyro.getVelocityY(), ballVelo);
+        return theta;
+    }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Turning Anlge", turningEncoder.getPosition());
+        SmartDashboard.putNumber("Shooter Anlge with Respect feild", getShooterAngleFeild().in(Degrees));
         SmartDashboard.putNumber("FlyWheel RPM", flyWheelEncoder.getVelocity());
     }
-
+    //With respect to the robot
     public Angle getAngle() {
         Angle angle = Degrees.of(m_gyro.getAngle());
+        return angle;
+    }
+    //Shooter angle with respect to the feild
+    public Angle getShooterAngleFeild() {
+        Angle angle = Degrees.of(m_gyro.getAngle() + turningEncoder.getPosition());
         return angle;
     }
 
