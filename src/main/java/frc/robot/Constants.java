@@ -110,8 +110,10 @@ public final class Constants {
 
     public static final double flyWheelfeedFoward = 0;
     public static final double flyWheelkP = 0;
+    public static final double flyWheelError = 1;
 
     public static final double turningkP = 0;
+    public static final double turningError = 0;
 
     public static final Angle shooterAngleOffset = Degree.of(90);
     public static final double shooterDistanceCenter = 0.5;
