@@ -111,6 +111,8 @@ public final class Constants {
     public static final double flyWheelfeedFoward = 0;
     public static final double flyWheelkP = 0;
 
+    public static final double turningkP = 0;
+
     public static final Angle shooterAngleOffset = Degree.of(90);
     public static final double shooterDistanceCenter = 0.5;
 
@@ -118,6 +120,8 @@ public final class Constants {
     public static final Angle limelightMountAngle = Degrees.of(45);
     public static final double limelightHeight = 0.5;
     public static final double limelightDistanceCenter = 0.5;
+
+    public static final double ballVelo = 1;
   }
 
   public static final class HopperConstants {

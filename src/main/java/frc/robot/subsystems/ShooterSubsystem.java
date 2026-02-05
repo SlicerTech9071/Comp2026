@@ -41,6 +41,7 @@ public class ShooterSubsystem extends SubsystemBase {
     AbsoluteEncoder turningEncoder;
 
     PIDController flyWheelPID;
+    PIDController turingPID;
 
     private final AHRS m_gyro = new AHRS(NavXComType.kMXP_SPI);
     public ShooterSubsystem() {
@@ -65,6 +66,7 @@ public class ShooterSubsystem extends SubsystemBase {
         turningEncoder = turningMotor.getAbsoluteEncoder();
 
         flyWheelPID = new PIDController(ShooterConstants.flyWheelkP, 0, 0);
+        turingPID = new PIDController(ShooterConstants.turningkP, 0, 0);
     }
 
     public double yDistanceToFidicual(double tync, double fidicualHeight) {
@@ -150,7 +152,7 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Turning Anlge", turningEncoder.getPosition());
-        SmartDashboard.putNumber("Shooter Anlge with Respect feild", getShooterAngleFeild().in(Degrees));
+        SmartDashboard.putNumber("Shooter Anlge with Respect feild", getTurningAngleFeild().in(Degrees));
         SmartDashboard.putNumber("FlyWheel RPM", flyWheelEncoder.getVelocity());
     }
     //With respect to the robot
@@ -158,10 +160,29 @@ public class ShooterSubsystem extends SubsystemBase {
         Angle angle = Degrees.of(m_gyro.getAngle());
         return angle;
     }
-    //Shooter angle with respect to the feild
-    public Angle getShooterAngleFeild() {
+    //Turning angle with respect to the feild
+    public Angle getTurningAngleFeild() {
         Angle angle = Degrees.of(m_gyro.getAngle() + turningEncoder.getPosition());
         return angle;
+    }
+
+    public void runTuringingMotor(double speed) {
+        turningMotor.set(speed);
+    }
+
+    public void setTurningPos(double angle) {
+        turingPID.setSetpoint(angle);
+    }
+
+    public void turningMoveTo(){
+        double speed = MathUtil.clamp(turingPID.calculate(getTurningAngleFeild().in(Degrees)), -1, 1);
+        runTuringingMotor(speed);
+    }
+
+    public void teleop() {
+        double theta = calcTurningAngle();
+        setTurningPos(theta);
+        turningMoveTo();
     }
 
     public void runFlyWheelMotor(double speed) {

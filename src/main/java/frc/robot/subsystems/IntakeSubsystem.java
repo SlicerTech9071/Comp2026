@@ -1,7 +1,5 @@
 package frc.robot.subsystems;
 
-import java.lang.management.MemoryType;
-
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
