@@ -12,16 +12,12 @@ import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
-import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.ResetMode;
 
-import edu.wpi.first.apriltag.AprilTag;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.units.AngleUnit;
-import edu.wpi.first.wpilibj.ADIS16470_IMU;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
@@ -30,7 +26,6 @@ import frc.robot.Constants.AprilTags.AprilTag10;
 import frc.robot.Constants.AprilTags.AprilTag2;
 import frc.robot.Constants.AprilTags.AprilTag5;
 import frc.robot.LimelightHelpers.RawFiducial;
-import frc.robot.Constants.AprilTags;
 
 import edu.wpi.first.units.measure.Angle;
 
@@ -140,16 +135,33 @@ public class ShooterSubsystem extends SubsystemBase {
         }
         return 0;
     }
+    //Adjust theta calculation with the robot velocity in mind.
+    public double adjustAngleForRobotSpeed(double theta, double robotXVel, double robotYVel, double ballSpeed) {
+        return theta - Math.asin(((robotXVel + Math.tan(theta)*robotYVel)*Math.cos(theta))/ballSpeed);
+    }
 
-    public Angle getAngle() {
-        Angle angle = Degrees.of(m_gyro.getAngle());
-        return angle;
+    public double calcTurningAngle() {
+        double ballVelo = ShooterConstants.ballVelo;
+        double theta = shooterAngleToTarget();
+        theta = adjustAngleForRobotSpeed(theta, m_gyro.getVelocityX(), m_gyro.getVelocityY(), ballVelo);
+        return theta;
     }
 
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Turning Anlge", turningEncoder.getPosition());
+        SmartDashboard.putNumber("Shooter Anlge with Respect feild", getShooterAngleFeild().in(Degrees));
         SmartDashboard.putNumber("FlyWheel RPM", flyWheelEncoder.getVelocity());
+    }
+    //With respect to the robot
+    public Angle getAngle() {
+        Angle angle = Degrees.of(m_gyro.getAngle());
+        return angle;
+    }
+    //Shooter angle with respect to the feild
+    public Angle getShooterAngleFeild() {
+        Angle angle = Degrees.of(m_gyro.getAngle() + turningEncoder.getPosition());
+        return angle;
     }
 
     public void runFlyWheelMotor(double speed) {
