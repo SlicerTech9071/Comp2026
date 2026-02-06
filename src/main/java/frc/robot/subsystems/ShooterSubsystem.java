@@ -1,3 +1,5 @@
+package frc.robot.subsystems;
+
 import com.revrobotics.spark.SparkMax;
 
 import static edu.wpi.first.units.Units.Degrees;
