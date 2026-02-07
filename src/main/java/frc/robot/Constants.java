@@ -140,6 +140,11 @@ public final class Constants {
     public static final int pivotMotorid = 12;
   }
 
+  public static final class hopperConstants {
+    public static final int indexerMotorid = 1;
+    public static final int expansionMotorid = 2;
+  }
+
   public static final class AprilTags {
     public static final class AprilTag10 {
       public static final double height = 1;
