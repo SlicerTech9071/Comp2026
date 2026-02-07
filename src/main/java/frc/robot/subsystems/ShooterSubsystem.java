@@ -67,11 +67,14 @@ public class ShooterSubsystem extends SubsystemBase {
 
         flyWheelPID = new PIDController(ShooterConstants.flyWheelkP, 0, 0);
         turingPID = new PIDController(ShooterConstants.turningkP, 0, 0);
+
+        flyWheelPID.setTolerance(ShooterConstants.flyWheelError);
+        turingPID.setTolerance(ShooterConstants.turningError);
     }
 
     public double yDistanceToFidicual(double tync, double fidicualHeight) {
         double h = fidicualHeight - ShooterConstants.limelightHeight;
-        double angle = Math.tan(tync + ShooterConstants.limelightMountAngle.in(Radians));
+        double angle = Math.tan(Degrees.of(tync).in(Radians) + ShooterConstants.limelightMountAngle.in(Radians));
         return h/angle;   
     }
 
@@ -151,9 +154,11 @@ public class ShooterSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Distance", yDistanceToFidicual(LimelightHelpers.getTYNC(""), 0.457));
         SmartDashboard.putNumber("Turning Anlge", turningEncoder.getPosition());
         SmartDashboard.putNumber("Shooter Anlge with Respect feild", getTurningAngleFeild().in(Degrees));
         SmartDashboard.putNumber("FlyWheel RPM", flyWheelEncoder.getVelocity());
+        SmartDashboard.putBoolean("READY TO FIRE", readyToFire());
     }
     //With respect to the robot
     public Angle getAngle() {
@@ -199,5 +204,13 @@ public class ShooterSubsystem extends SubsystemBase {
         double output = flyWheelPID.calculate(flyWheelEncoder.getVelocity()) + ShooterConstants.flyWheelfeedFoward;
         output = MathUtil.clamp(output, 0, 1);
         runFlyWheelMotor(output);
+    }
+
+    public boolean readyToFire() {
+        if (flyWheelPID.atSetpoint() || turingPID.atSetpoint()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

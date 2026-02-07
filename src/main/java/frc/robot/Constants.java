@@ -115,12 +115,12 @@ public final class Constants {
     public static final double turningkP = 0;
     public static final double turningError = 0;
 
-    public static final Angle shooterAngleOffset = Degree.of(90);
+    public static final Angle shooterAngleOffset = Degree.of(16);
     public static final double shooterDistanceCenter = 0.5;
 
     public static final String limelightName = "";
-    public static final Angle limelightMountAngle = Degrees.of(45);
-    public static final double limelightHeight = 0.5;
+    public static final Angle limelightMountAngle = Degrees.of(11.19);
+    public static final double limelightHeight = 0.172; //meters
     public static final double limelightDistanceCenter = 0.5;
 
     public static final double ballVelo = 1;
