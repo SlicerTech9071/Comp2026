@@ -7,11 +7,10 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.hal.simulation.RelayDataJNI;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.hopperConstants;
-import pabeles.concurrency.ConcurrencyOps.Reset;
 
  public class HopperSubsystem extends SubsystemBase{
      SparkMax hopperIndexerMotor;
@@ -22,6 +21,8 @@ import pabeles.concurrency.ConcurrencyOps.Reset;
      SparkMaxConfig hopperIndexerConfig;
      SparkMaxConfig expansionConfig;
     
+     DigitalInput limitSwitch;
+
      public HopperSubsystem() {
         hopperIndexerMotor = new SparkMax(hopperConstants.indexerMotorid, MotorType.kBrushless);
         expansionMotor = new SparkMax(hopperConstants.expansionMotorid, MotorType.kBrushless);
@@ -34,6 +35,22 @@ import pabeles.concurrency.ConcurrencyOps.Reset;
         hopperIndexerMotor.configure(hopperIndexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         expansionMotor.configure(expansionConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-    
+        limitSwitch = new DigitalInput(HopperConstants.hopperLimitid);
     }
+
+    @Override
+    public void periodic() {
+
+    }
+
+    public void extendHopper() {
+        if (limitSwitch.get()) {
+            expansionMotor.set(HopperConstants.hopperExtensionSpeed);
+        }
+    }
+
+    public void teleop() {
+        hopperIndexerMotor.set(HopperConstants.indexerSpeed);
+    }
+
 }
