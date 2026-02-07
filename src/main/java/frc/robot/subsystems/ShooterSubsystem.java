@@ -32,10 +32,10 @@ import edu.wpi.first.units.measure.Angle;
 import frc.robot.LimelightHelpers;
 
 public class ShooterSubsystem extends SubsystemBase {
-    SparkMax flyWheelMotor;
-    SparkMax turningMotor;
-    SparkMaxConfig flyWheelMotorConfig;
-    SparkMaxConfig turningMotorConfig;
+    public SparkMax flyWheelMotor;
+    public SparkMax turningMotor;
+    public SparkMaxConfig flyWheelMotorConfig;
+    public SparkMaxConfig turningMotorConfig;
 
     RelativeEncoder flyWheelEncoder;
     AbsoluteEncoder turningEncoder;
