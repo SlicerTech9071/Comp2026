@@ -133,6 +133,7 @@ public final class Constants {
     public static final int hopperLimitid = 0;
 
     public static final double hopperExtensionSpeed = 0.1;
+    public static final double indexerSpeed = 0.1;
   }
 
     public static final class intakeConstants {
