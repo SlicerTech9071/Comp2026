@@ -34,21 +34,27 @@ import frc.robot.LimelightHelpers;
 public class ShooterSubsystem extends SubsystemBase {
     public SparkMax flyWheelMotor;
     public SparkMax turningMotor;
+    public SparkMax hoodMotor;
     public SparkMaxConfig flyWheelMotorConfig;
     public SparkMaxConfig turningMotorConfig;
+    public SparkMaxConfig hoodMotorConfig;
 
     RelativeEncoder flyWheelEncoder;
     AbsoluteEncoder turningEncoder;
+    RelativeEncoder hoodMotorEncoder;
 
     PIDController flyWheelPID;
-    PIDController turingPID;
+    PIDController turningPID;
+    PIDController hoodMotorPID;
 
     private final AHRS m_gyro = new AHRS(NavXComType.kMXP_SPI);
     public ShooterSubsystem() {
         flyWheelMotor = new SparkMax(ShooterConstants.flyWheelMotorid, MotorType.kBrushless);
         turningMotor = new SparkMax(ShooterConstants.turningMotorid, MotorType.kBrushless);
+        hoodMotor = new SparkMax(ShooterConstants.hoodMotorid, MotorType.kBrushless);
         flyWheelMotorConfig = new SparkMaxConfig(); 
         turningMotorConfig = new SparkMaxConfig();
+        hoodMotorConfig = new SparkMaxConfig();
 
         flyWheelMotorConfig
         .inverted(false)
@@ -58,18 +64,26 @@ public class ShooterSubsystem extends SubsystemBase {
         .inverted(false)
         .idleMode(IdleMode.kBrake)
         .smartCurrentLimit(50);
+        hoodMotorConfig
+        .inverted(false)
+        .idleMode(IdleMode.kBrake)
+        .smartCurrentLimit(50);
 
         flyWheelMotor.configure(flyWheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         turningMotor.configure(turningMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        hoodMotor.configure(hoodMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         flyWheelEncoder = flyWheelMotor.getEncoder();
         turningEncoder = turningMotor.getAbsoluteEncoder();
+        hoodMotorEncoder = hoodMotor.getEncoder();
 
         flyWheelPID = new PIDController(ShooterConstants.flyWheelkP, 0, 0);
-        turingPID = new PIDController(ShooterConstants.turningkP, 0, 0);
+        turningPID = new PIDController(ShooterConstants.turningkP, 0, 0);
+        hoodMotorPID = new PIDController(ShooterConstants.hoodkP, 0,0);
 
         flyWheelPID.setTolerance(ShooterConstants.flyWheelError);
-        turingPID.setTolerance(ShooterConstants.turningError);
+        turningPID.setTolerance(ShooterConstants.turningError);
+        hoodMotorPID.setTolerance(ShooterConstants.hoodError);
     }
 
     public double yDistanceToFidicual(double tync, double fidicualHeight) {
@@ -171,17 +185,17 @@ public class ShooterSubsystem extends SubsystemBase {
         return angle;
     }
 
-    public void runTuringingMotor(double speed) {
+    public void runTurningingMotor(double speed) {
         turningMotor.set(speed);
     }
 
     public void setTurningPos(double angle) {
-        turingPID.setSetpoint(angle);
+        turningPID.setSetpoint(angle);
     }
 
     public void turningMoveTo(){
-        double speed = MathUtil.clamp(turingPID.calculate(getTurningAngleFeild().in(Degrees)), -1, 1);
-        runTuringingMotor(speed);
+        double speed = MathUtil.clamp(turningPID.calculate(getTurningAngleFeild().in(Degrees)), -1, 1);
+        runTurningingMotor(speed);
     }
 
     public void teleop() {
@@ -207,10 +221,19 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public boolean readyToFire() {
-        if (flyWheelPID.atSetpoint() || turingPID.atSetpoint()) {
+        if (flyWheelPID.atSetpoint() || turningPID.atSetpoint()) {
             return true;
         } else {
             return false;
         }
     }
+    public void setPointHoodPID(double angle) {
+        hoodMotorPID.setSetpoint(angle);
+    }
+    public void setHoodMoveTo(){
+        double output = hoodMotorPID.calculate(hoodMotorEncoder.getPosition());
+        output = MathUtil.clamp(output,-1,1);
+        hoodMotor.set(output);
+    }
+
 }

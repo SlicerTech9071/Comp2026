@@ -107,6 +107,7 @@ public final class Constants {
   public static final class ShooterConstants {
     public static final int flyWheelMotorid = 1;
     public static final int turningMotorid = 2;
+    public static final int hoodMotorid = 1;
 
     public static final double flyWheelfeedFoward = 0;
     public static final double flyWheelkP = 0;
@@ -114,6 +115,9 @@ public final class Constants {
 
     public static final double turningkP = 0;
     public static final double turningError = 0;
+
+    public static final double hoodkP = 0;
+    public static final double hoodError = 0;
 
     public static final Angle shooterAngleOffset = Degree.of(16);
     public static final double shooterDistanceCenter = 0.5;
