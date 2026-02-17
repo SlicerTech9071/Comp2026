@@ -221,7 +221,7 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     public boolean readyToFire() {
-        if (flyWheelPID.atSetpoint() || turningPID.atSetpoint()) {
+        if (flyWheelPID.atSetpoint() || turningPID.atSetpoint() || hoodMotorPID.atStepoint( )) {
             return true;
         } else {
             return false;
@@ -230,7 +230,7 @@ public class ShooterSubsystem extends SubsystemBase {
     public void setPointHoodPID(double angle) {
         hoodMotorPID.setSetpoint(angle);
     }
-    public void setHoodMoveTo(){
+    public void hoodMoveTo(){
         double output = hoodMotorPID.calculate(hoodMotorEncoder.getPosition());
         output = MathUtil.clamp(output,-1,1);
         hoodMotor.set(output);
