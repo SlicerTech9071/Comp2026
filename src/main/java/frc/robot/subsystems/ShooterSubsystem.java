@@ -247,13 +247,6 @@ public class ShooterSubsystem extends SubsystemBase {
     }
 
     //PID control of Hood Motor
-    public boolean readyToFire() {
-        if (flyWheelPID.atSetpoint() || turningPID.atSetpoint() || hoodMotorPID.atStepoint( )) {
-            return true;
-        } else {
-            return false;
-        }
-    }
     public void setPointHoodPID(double angle) {
         hoodMotorPID.setSetpoint(angle);
     }
