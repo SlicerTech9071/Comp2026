@@ -31,6 +31,17 @@ import edu.wpi.first.units.measure.Angle;
 
 import frc.robot.LimelightHelpers;
 
+//TODO
+//Find a regression model that corretly estimates hood angle
+//Create a function with that regression model
+//Make a default command for this subsystem(Can be in its own command class) that
+//1 calculates and set theta and alpha
+//2 moves all PID controlles to setpoint 
+
+
+//ShooterSub controls anything that deals with the shooting of fuel. Aiming, Flywheel, ...
+//Theta is the angle that controls the rotating turret. Relative to the feild.
+//Alpha is the angle that controls the hood angle/launch angle.
 public class ShooterSubsystem extends SubsystemBase {
     public SparkMax flyWheelMotor;
     public SparkMax turningMotor;
@@ -86,24 +97,28 @@ public class ShooterSubsystem extends SubsystemBase {
         hoodMotorPID.setTolerance(ShooterConstants.hoodError);
     }
 
+    //Finds the distance away from and fidicual the limelight finds
     public double yDistanceToFidicual(double tync, double fidicualHeight) {
         double h = fidicualHeight - ShooterConstants.limelightHeight;
         double angle = Math.tan(Degrees.of(tync).in(Radians) + ShooterConstants.limelightMountAngle.in(Radians));
         return h/angle;   
     }
 
+    //Finds the left or right distance from any fidicual
     public double xDistanceToFidicual(double txnc, double dy, double gyroAngle) {
         return dy * Math.tan(gyroAngle - txnc);
     }
 
+    //Finds the offset of the Camera and Shooter in the normal x and normal y
+    //Important for calculating angle theta
     public double xCameraShooterOffset(double gyroAngle) {
         return ShooterConstants.limelightDistanceCenter*Math.sin(gyroAngle) - ShooterConstants.shooterDistanceCenter*Math.sin(gyroAngle+ShooterConstants.shooterAngleOffset.in(Radians));
     }
-
     public double yCameraShooterOffset(double gyroAngle) {
         return ShooterConstants.limelightDistanceCenter*Math.cos(gyroAngle) - ShooterConstants.shooterDistanceCenter*Math.cos(gyroAngle+ShooterConstants.shooterAngleOffset.in(Radians));
     }
 
+    //Finds angle theta. There is defintaly a cleaner way to do this.
     public double shooterAngleToTarget() {
         try {         
             RawFiducial[] fiducials = LimelightHelpers.getRawFiducials(ShooterConstants.limelightName);
@@ -154,11 +169,14 @@ public class ShooterSubsystem extends SubsystemBase {
         }
         return 0;
     }
-    //Adjust theta calculation with the robot velocity in mind.
+    
+    //Adjust theta such that the sum of the robot vel and fuels shooting vel equal theta
+    //Acounts theta for the robot velocity
     public double adjustAngleForRobotSpeed(double theta, double robotXVel, double robotYVel, double ballSpeed) {
         return theta - Math.asin(((robotXVel + Math.tan(theta)*robotYVel)*Math.cos(theta))/ballSpeed);
     }
 
+    //Combines ever theta function to find the corret angle for the turret
     public double calcTurningAngle() {
         double ballVelo = ShooterConstants.ballVelo;
         double theta = shooterAngleToTarget();
@@ -170,31 +188,33 @@ public class ShooterSubsystem extends SubsystemBase {
     public void periodic() {
         SmartDashboard.putNumber("Distance", yDistanceToFidicual(LimelightHelpers.getTYNC(""), 0.457));
         SmartDashboard.putNumber("Turning Anlge", turningEncoder.getPosition());
-        SmartDashboard.putNumber("Shooter Anlge with Respect feild", getTurningAngleFeild().in(Degrees));
+        SmartDashboard.putNumber("Shooter Anlge with Respect feild", getTurretAngleFeild().in(Degrees));
         SmartDashboard.putNumber("FlyWheel RPM", flyWheelEncoder.getVelocity());
         SmartDashboard.putBoolean("READY TO FIRE", readyToFire());
     }
-    //With respect to the robot
+    //Returns robot angle
     public Angle getAngle() {
         Angle angle = Degrees.of(m_gyro.getAngle());
         return angle;
     }
-    //Turning angle with respect to the feild
-    public Angle getTurningAngleFeild() {
+    
+    //Angle of turret with respect to the feild
+    public Angle getTurretAngleFeild() {
         Angle angle = Degrees.of(m_gyro.getAngle() + turningEncoder.getPosition());
         return angle;
     }
 
+    //Manual control of Turning Motor
     public void runTurningingMotor(double speed) {
         turningMotor.set(speed);
     }
-
+    
+    //PID control of Turning Motor
     public void setTurningPos(double angle) {
         turningPID.setSetpoint(angle);
     }
-
     public void turningMoveTo(){
-        double speed = MathUtil.clamp(turningPID.calculate(getTurningAngleFeild().in(Degrees)), -1, 1);
+        double speed = MathUtil.clamp(turningPID.calculate(getTurretAngleFeild().in(Degrees)), -1, 1);
         runTurningingMotor(speed);
     }
 
@@ -204,36 +224,44 @@ public class ShooterSubsystem extends SubsystemBase {
         turningMoveTo();
     }
 
+    //Manual control of FlyWheel Motor
     public void runFlyWheelMotor(double speed) {
         flyWheelMotor.set(speed);
     }
 
+    //PID control of FlyWheel Motor
     public void setRPM(double RPM) {
         if (RPM < 4000){
             flyWheelPID.setSetpoint(RPM);
         }
     }
-
     public void runFlyWheel() {
         double output = flyWheelPID.calculate(flyWheelEncoder.getVelocity()) + ShooterConstants.flyWheelfeedFoward;
         output = MathUtil.clamp(output, 0, 1);
         runFlyWheelMotor(output);
     }
 
+    //Manual Controll of Hood Motor
+    public void runHoodMotor(double speed) {
+        hoodMotor.set(speed);
+    }
+
+    //PID control of Hood Motor
+    public void setPointHoodPID(double angle) {
+        hoodMotorPID.setSetpoint(angle);
+    }
+    public void HoodMoveTo(){
+        double output = hoodMotorPID.calculate(hoodMotorEncoder.getPosition());
+        output = MathUtil.clamp(output,-1,1);
+        runHoodMotor(output);
+    }
+
+    //Checks if PID controlls are within threshold
     public boolean readyToFire() {
-        if (flyWheelPID.atSetpoint() || turningPID.atSetpoint()) {
+        if (flyWheelPID.atSetpoint() || turningPID.atSetpoint() || hoodMotorPID.atSetpoint()) {
             return true;
         } else {
             return false;
         }
     }
-    public void setPointHoodPID(double angle) {
-        hoodMotorPID.setSetpoint(angle);
-    }
-    public void setHoodMoveTo(){
-        double output = hoodMotorPID.calculate(hoodMotorEncoder.getPosition());
-        output = MathUtil.clamp(output,-1,1);
-        hoodMotor.set(output);
-    }
-
 }
