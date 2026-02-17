@@ -10,6 +10,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.intakeConstants;
 
+//IntakeSub controls anything that picks up fuel
 public class IntakeSubsystem extends SubsystemBase{
     SparkMax intakeMotor;
     SparkMax pivotMotor;
@@ -36,6 +37,7 @@ public class IntakeSubsystem extends SubsystemBase{
     public void setIntakePos(double setPoint){
         pivotMotorPID.setSetpoint(setPoint);
     }
+    
     public void moveIntaketoPos (){
         double Speed = pivotMotorPID.calculate(pivotMotorEncoder.getPosition());
         pivotMotor.set(Speed);

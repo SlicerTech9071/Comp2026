@@ -12,7 +12,8 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.hopperConstants;
 
- public class HopperSubsystem extends SubsystemBase{
+//HopperSub control any storing and indexing of any fuel
+public class HopperSubsystem extends SubsystemBase{
      SparkMax hopperIndexerMotor;
      SparkMax expansionMotor;
      
