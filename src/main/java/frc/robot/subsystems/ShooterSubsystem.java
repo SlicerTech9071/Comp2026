@@ -258,7 +258,7 @@ public class ShooterSubsystem extends SubsystemBase {
 
     //Checks if PID controlls are within threshold
     public boolean readyToFire() {
-        if (flyWheelPID.atSetpoint() || turningPID.atSetpoint() || hoodMotorPID.atSetpoint()) {
+        if (flyWheelPID.atSetpoint() && turningPID.atSetpoint() && hoodMotorPID.atSetpoint()) {
             return true;
         } else {
             return false;
