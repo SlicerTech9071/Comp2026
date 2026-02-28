@@ -130,16 +130,6 @@ public final class Constants {
     public static final double ballVelo = 1;
   }
 
-  public static final class HopperConstants {
-    public static final int hopperLinearActuatorid = 0;
-    public static final int hopperMotorid = 11;
-
-    public static final int hopperLimitid = 0;
-
-    public static final double hopperExtensionSpeed = 0.1;
-    public static final double indexerSpeed = 0.1;
-  }
-
     public static final class intakeConstants {
     public static final int intakeMotorid = 11;
     public static final int pivotMotorid = 12;
@@ -147,7 +137,10 @@ public final class Constants {
 
   public static final class hopperConstants {
     public static final int indexerMotorid = 1;
-    public static final int expansionMotorid = 2;
+    public static final int expansionMotorLeftid = 2;
+    public static final int expansionMotorRightid = 3;
+
+    public static final double hopperSpeed = 0.1;
   }
 
   public static final class AprilTags {

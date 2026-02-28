@@ -44,57 +44,57 @@ import frc.robot.LimelightHelpers;
 //Alpha is the angle that controls the hood angle/launch angle.
 public class ShooterSubsystem extends SubsystemBase {
     public SparkMax flyWheelMotor;
-    public SparkMax turningMotor;
-    public SparkMax hoodMotor;
+    // public SparkMax turningMotor;
+    // public SparkMax hoodMotor;
     public SparkMaxConfig flyWheelMotorConfig;
-    public SparkMaxConfig turningMotorConfig;
-    public SparkMaxConfig hoodMotorConfig;
+    // public SparkMaxConfig turningMotorConfig;
+    // public SparkMaxConfig hoodMotorConfig;
 
     RelativeEncoder flyWheelEncoder;
-    AbsoluteEncoder turningEncoder;
-    RelativeEncoder hoodMotorEncoder;
+    // AbsoluteEncoder turningEncoder;
+    // RelativeEncoder hoodMotorEncoder;
 
     PIDController flyWheelPID;
-    PIDController turningPID;
-    PIDController hoodMotorPID;
+    // PIDController turningPID;
+    // PIDController hoodMotorPID;
 
     private final AHRS m_gyro = new AHRS(NavXComType.kMXP_SPI);
     public ShooterSubsystem() {
         flyWheelMotor = new SparkMax(ShooterConstants.flyWheelMotorid, MotorType.kBrushless);
-        turningMotor = new SparkMax(ShooterConstants.turningMotorid, MotorType.kBrushless);
-        hoodMotor = new SparkMax(ShooterConstants.hoodMotorid, MotorType.kBrushless);
+        // turningMotor = new SparkMax(ShooterConstants.turningMotorid, MotorType.kBrushless);
+        // hoodMotor = new SparkMax(ShooterConstants.hoodMotorid, MotorType.kBrushless);
         flyWheelMotorConfig = new SparkMaxConfig(); 
-        turningMotorConfig = new SparkMaxConfig();
-        hoodMotorConfig = new SparkMaxConfig();
+        // turningMotorConfig = new SparkMaxConfig();
+        // hoodMotorConfig = new SparkMaxConfig();
 
         flyWheelMotorConfig
         .inverted(false)
         .idleMode(IdleMode.kCoast)
         .smartCurrentLimit(50);
-        turningMotorConfig
-        .inverted(false)
-        .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(50);
-        hoodMotorConfig
-        .inverted(false)
-        .idleMode(IdleMode.kBrake)
-        .smartCurrentLimit(50);
+        // turningMotorConfig
+        // .inverted(false)
+        // .idleMode(IdleMode.kBrake)
+        // .smartCurrentLimit(50);
+        // hoodMotorConfig
+        // .inverted(false)
+        // .idleMode(IdleMode.kBrake)
+        // .smartCurrentLimit(50);
 
         flyWheelMotor.configure(flyWheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        turningMotor.configure(turningMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        hoodMotor.configure(hoodMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // turningMotor.configure(turningMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        // hoodMotor.configure(hoodMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
         flyWheelEncoder = flyWheelMotor.getEncoder();
-        turningEncoder = turningMotor.getAbsoluteEncoder();
-        hoodMotorEncoder = hoodMotor.getEncoder();
+        // turningEncoder = turningMotor.getAbsoluteEncoder();
+        // hoodMotorEncoder = hoodMotor.getEncoder();
 
         flyWheelPID = new PIDController(ShooterConstants.flyWheelkP, 0, 0);
-        turningPID = new PIDController(ShooterConstants.turningkP, 0, 0);
-        hoodMotorPID = new PIDController(ShooterConstants.hoodkP, 0,0);
+        // turningPID = new PIDController(ShooterConstants.turningkP, 0, 0);
+        // hoodMotorPID = new PIDController(ShooterConstants.hoodkP, 0,0);
 
         flyWheelPID.setTolerance(ShooterConstants.flyWheelError);
-        turningPID.setTolerance(ShooterConstants.turningError);
-        hoodMotorPID.setTolerance(ShooterConstants.hoodError);
+        // turningPID.setTolerance(ShooterConstants.turningError);
+        // hoodMotorPID.setTolerance(ShooterConstants.hoodError);
     }
 
     //Finds the distance away from and fidicual the limelight finds
@@ -187,10 +187,7 @@ public class ShooterSubsystem extends SubsystemBase {
     @Override
     public void periodic() {
         SmartDashboard.putNumber("Distance", yDistanceToFidicual(LimelightHelpers.getTYNC(""), 0.457));
-        SmartDashboard.putNumber("Turning Anlge", turningEncoder.getPosition());
-        SmartDashboard.putNumber("Shooter Anlge with Respect feild", getTurretAngleFeild().in(Degrees));
         SmartDashboard.putNumber("FlyWheel RPM", flyWheelEncoder.getVelocity());
-        SmartDashboard.putBoolean("READY TO FIRE", readyToFire());
     }
     //Returns robot angle
     public Angle getAngle() {
@@ -199,29 +196,27 @@ public class ShooterSubsystem extends SubsystemBase {
     }
     
     //Angle of turret with respect to the feild
-    public Angle getTurretAngleFeild() {
-        Angle angle = Degrees.of(m_gyro.getAngle() + turningEncoder.getPosition());
-        return angle;
-    }
+    // public Angle getTurretAngleFeild() {
+    //     Angle angle = Degrees.of(m_gyro.getAngle() + turningEncoder.getPosition());
+    //     return angle;
+    // }
 
-    //Manual control of Turning Motor
-    public void runTurningingMotor(double speed) {
-        turningMotor.set(speed);
-    }
+    // //Manual control of Turning Motor
+    // public void runTurningingMotor(double speed) {
+    //     turningMotor.set(speed);
+    // }
     
-    //PID control of Turning Motor
-    public void setTurningPos(double angle) {
-        turningPID.setSetpoint(angle);
-    }
-    public void turningMoveTo(){
-        double speed = MathUtil.clamp(turningPID.calculate(getTurretAngleFeild().in(Degrees)), -1, 1);
-        runTurningingMotor(speed);
-    }
+    // //PID control of Turning Motor
+    // public void setTurningPos(double angle) {
+    //     turningPID.setSetpoint(angle);
+    // }
+    // public void turningMoveTo(){
+    //     double speed = MathUtil.clamp(turningPID.calculate(getTurretAngleFeild().in(Degrees)), -1, 1);
+    //     runTurningingMotor(speed);
+    // }
 
     public void teleop() {
-        double theta = calcTurningAngle();
-        setTurningPos(theta);
-        turningMoveTo();
+
     }
 
     //Manual control of FlyWheel Motor
@@ -241,27 +236,27 @@ public class ShooterSubsystem extends SubsystemBase {
         runFlyWheelMotor(output);
     }
 
-    //Manual Controll of Hood Motor
-    public void runHoodMotor(double speed) {
-        hoodMotor.set(speed);
-    }
+    // //Manual Controll of Hood Motor
+    // public void runHoodMotor(double speed) {
+    //     hoodMotor.set(speed);
+    // }
 
-    //PID control of Hood Motor
-    public void setPointHoodPID(double angle) {
-        hoodMotorPID.setSetpoint(angle);
-    }
-    public void hoodMoveTo(){
-        double output = hoodMotorPID.calculate(hoodMotorEncoder.getPosition());
-        output = MathUtil.clamp(output,-1,1);
-        runHoodMotor(output);
-    }
+    // //PID control of Hood Motor
+    // public void setPointHoodPID(double angle) {
+    //     hoodMotorPID.setSetpoint(angle);
+    // }
+    // public void hoodMoveTo(){
+    //     double output = hoodMotorPID.calculate(hoodMotorEncoder.getPosition());
+    //     output = MathUtil.clamp(output,-1,1);
+    //     runHoodMotor(output);
+    // }
 
     //Checks if PID controlls are within threshold
-    public boolean readyToFire() {
-        if (flyWheelPID.atSetpoint() && turningPID.atSetpoint() && hoodMotorPID.atSetpoint()) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    // public boolean readyToFire() {
+    //     if (flyWheelPID.atSetpoint() || turningPID.atSetpoint() || hoodMotorPID.atSetpoint()) {
+    //         return true;
+    //     } else {
+    //         return false;
+    //     }
+    // }
 }
