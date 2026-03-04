@@ -136,11 +136,13 @@ public final class Constants {
   }
 
   public static final class hopperConstants {
-    public static final int indexerMotorid = 1;
+    public static final int indexerMotorTopid = 0;
+    public static final int indexerMotorBottomid = 0;
     public static final int expansionMotorLeftid = 2;
     public static final int expansionMotorRightid = 3;
 
     public static final double hopperSpeed = 0.1;
+    public static final double indexerSpeed = 0.1;
   }
 
   public static final class AprilTags {

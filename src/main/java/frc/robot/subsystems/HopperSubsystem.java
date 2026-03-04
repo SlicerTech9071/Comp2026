@@ -7,36 +7,43 @@ import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
-import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.HopperConstants;
 import frc.robot.Constants.hopperConstants;
 
 //HopperSub control any storing and indexing of any fuel
 public class HopperSubsystem extends SubsystemBase{
-     SparkMax hopperIndexerMotor;
-     SparkMax expansionMotor;
+     SparkMax hopperIndexerMotorTop;
+     SparkMax hopperIndexerMotorBottom;
+     
+     SparkMax expansionMotorLeft;
+     SparkMax expansionMotorRight;
      
      RelativeEncoder expansionEncoder;
 
-     SparkMaxConfig hopperIndexerConfig;
-     SparkMaxConfig expansionConfig;
+     SparkMaxConfig hopperIndexerConfigTop;
+     SparkMaxConfig hopperIndexerrConfigBottom;
+     SparkMaxConfig expansionConfigLeft;
+     SparkMaxConfig expansionConfigRight;
     
-     DigitalInput limitSwitch;
 
      public HopperSubsystem() {
-        hopperIndexerMotor = new SparkMax(hopperConstants.indexerMotorid, MotorType.kBrushless);
-        expansionMotor = new SparkMax(hopperConstants.expansionMotorid, MotorType.kBrushless);
+        hopperIndexerMotorTop = new SparkMax(hopperConstants.indexerMotorTopid, MotorType.kBrushless);
+        hopperIndexerMotorBottom = new SparkMax(hopperConstants.indexerMotorBottomid, MotorType.kBrushless);
+        expansionMotorLeft = new SparkMax(hopperConstants.expansionMotorLeftid, MotorType.kBrushless);
+        expansionMotorRight = new SparkMax(hopperConstants.expansionMotorRightid, MotorType.kBrushless);
 
-        hopperIndexerConfig = new SparkMaxConfig();
-        expansionConfig = new SparkMaxConfig();
+        hopperIndexerConfigTop = new SparkMaxConfig();
+        hopperIndexerrConfigBottom = new SparkMaxConfig();
+        expansionConfigLeft = new SparkMaxConfig();
+        expansionConfigRight = new SparkMaxConfig();
     
-        expansionEncoder = expansionMotor.getEncoder();
+        expansionEncoder = expansionMotorLeft.getEncoder();
         
-        hopperIndexerMotor.configure(hopperIndexerConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        expansionMotor.configure(expansionConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        hopperIndexerMotorTop.configure(hopperIndexerConfigTop, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        hopperIndexerMotorBottom.configure(hopperIndexerrConfigBottom, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        expansionMotorLeft.configure(expansionConfigLeft, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        expansionMotorRight.configure(expansionConfigRight, ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
 
-        limitSwitch = new DigitalInput(HopperConstants.hopperLimitid);
     }
 
     @Override
@@ -44,14 +51,14 @@ public class HopperSubsystem extends SubsystemBase{
 
     }
 
-    public void extendHopper() {
-        if (limitSwitch.get()) {
-            expansionMotor.set(HopperConstants.hopperExtensionSpeed);
-        }
+    public void runExpansionMotors() {
+        expansionMotorLeft.set(-1*hopperConstants.hopperSpeed);
+        expansionMotorRight.set(hopperConstants.hopperSpeed);
     }
 
-    public void teleop() {
-        hopperIndexerMotor.set(HopperConstants.indexerSpeed);
+    public void runIndexer() {
+        hopperIndexerMotorTop.set(hopperConstants.indexerSpeed);
+        hopperIndexerMotorBottom.set(-1*hopperConstants.indexerSpeed);
     }
 
 }
