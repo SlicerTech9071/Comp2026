@@ -13,20 +13,13 @@ import frc.robot.Constants.intakeConstants;
 //IntakeSub controls anything that picks up fuel
 public class IntakeSubsystem extends SubsystemBase{
     SparkMax intakeMotor;
-    SparkMax pivotMotor;
 
     SparkMaxConfig intakeMotorConfig;
-    SparkMaxConfig pivotMotorConfig;
-    PIDController pivotMotorPID;
-    RelativeEncoder pivotMotorEncoder;
     public IntakeSubsystem() {
         intakeMotor = new SparkMax(intakeConstants.intakeMotorid, MotorType.kBrushless);
-        pivotMotor = new SparkMax(intakeConstants.pivotMotorid, MotorType.kBrushless);
-        pivotMotorEncoder = pivotMotor.getEncoder();
 
         intakeMotorConfig = new SparkMaxConfig();
-        pivotMotorConfig = new SparkMaxConfig();
-        pivotMotorPID = new PIDController(0, 0, 0);
+
     }
 
     @Override
@@ -34,12 +27,7 @@ public class IntakeSubsystem extends SubsystemBase{
 
     }
 
-    public void setIntakePos(double setPoint){
-        pivotMotorPID.setSetpoint(setPoint);
-    }
-    
-    public void moveIntaketoPos (){
-        double Speed = pivotMotorPID.calculate(pivotMotorEncoder.getPosition());
-        pivotMotor.set(Speed);
-    }
+        public void runIntake(double speed) {
+            intakeMotor.set(speed);
+        }
 }

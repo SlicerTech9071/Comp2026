@@ -31,14 +31,6 @@ import edu.wpi.first.units.measure.Angle;
 
 import frc.robot.LimelightHelpers;
 
-//TODO
-//Find a regression model that corretly estimates hood angle
-//Create a function with that regression model
-//Make a default command for this subsystem(Can be in its own command class) that
-//1 calculates and set theta and alpha
-//2 moves all PID controlles to setpoint 
-
-
 //ShooterSub controls anything that deals with the shooting of fuel. Aiming, Flywheel, ...
 //Theta is the angle that controls the rotating turret. Relative to the feild.
 //Alpha is the angle that controls the hood angle/launch angle.

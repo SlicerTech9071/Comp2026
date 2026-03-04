@@ -6,6 +6,7 @@ import com.revrobotics.ResetMode;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.hopperConstants;
@@ -21,7 +22,7 @@ public class HopperSubsystem extends SubsystemBase{
      RelativeEncoder expansionEncoder;
 
      SparkMaxConfig hopperIndexerConfigTop;
-     SparkMaxConfig hopperIndexerrConfigBottom;
+     SparkMaxConfig hopperIndexerConfigBottom;
      SparkMaxConfig expansionConfigLeft;
      SparkMaxConfig expansionConfigRight;
     
@@ -33,14 +34,24 @@ public class HopperSubsystem extends SubsystemBase{
         expansionMotorRight = new SparkMax(hopperConstants.expansionMotorRightid, MotorType.kBrushless);
 
         hopperIndexerConfigTop = new SparkMaxConfig();
-        hopperIndexerrConfigBottom = new SparkMaxConfig();
+        hopperIndexerConfigBottom = new SparkMaxConfig();
         expansionConfigLeft = new SparkMaxConfig();
         expansionConfigRight = new SparkMaxConfig();
+
+        hopperIndexerConfigTop
+        .idleMode(IdleMode.kCoast);
+        hopperIndexerConfigBottom
+        .idleMode(IdleMode.kCoast);
+
+        expansionConfigLeft
+        .idleMode(IdleMode.kBrake);
+        expansionConfigRight
+        .idleMode(IdleMode.kBrake);
     
         expansionEncoder = expansionMotorLeft.getEncoder();
         
         hopperIndexerMotorTop.configure(hopperIndexerConfigTop, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
-        hopperIndexerMotorBottom.configure(hopperIndexerrConfigBottom, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        hopperIndexerMotorBottom.configure(hopperIndexerConfigBottom, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         expansionMotorLeft.configure(expansionConfigLeft, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         expansionMotorRight.configure(expansionConfigRight, ResetMode.kResetSafeParameters,PersistMode.kPersistParameters);
 
@@ -51,9 +62,9 @@ public class HopperSubsystem extends SubsystemBase{
 
     }
 
-    public void runExpansionMotors() {
-        expansionMotorLeft.set(-1*hopperConstants.hopperSpeed);
-        expansionMotorRight.set(hopperConstants.hopperSpeed);
+    public void runExpansionMotors(int foward) {
+        expansionMotorLeft.set(-1*hopperConstants.hopperSpeed * foward);
+        expansionMotorRight.set(hopperConstants.hopperSpeed * foward);
     }
 
     public void runIndexer() {

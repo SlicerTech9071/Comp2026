@@ -9,6 +9,9 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
+import frc.robot.subsystems.HopperSubsystem;
+import frc.robot.subsystems.IntakeSubsystem;
+import frc.robot.subsystems.ShooterSubsystem;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -28,6 +31,9 @@ public class RobotContainer {
   
     // The robot's subsystems
   private final DriveSubsystem m_robotDrive = new DriveSubsystem();
+  private final ShooterSubsystem m_shooterSub = new ShooterSubsystem();
+  private final HopperSubsystem m_hopperSub = new HopperSubsystem();
+  private final IntakeSubsystem m_intakeSub = new IntakeSubsystem();
 
   // The driver's controller
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
@@ -58,7 +64,11 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     m_driverController.x().whileTrue(new RunCommand(()->m_robotDrive.zeroHeading(), m_robotDrive));
-    
+    m_driverController.leftTrigger().whileTrue(new RunCommand(() -> m_shooterSub.runFlyWheelMotor(0.2), m_shooterSub));
+    m_driverController.rightTrigger().whileTrue(new RunCommand(() -> m_hopperSub.runIndexer(), m_hopperSub));
+    m_driverController.leftBumper().whileTrue(new RunCommand(() -> m_hopperSub.runExpansionMotors(1), m_hopperSub));
+    m_driverController.rightBumper().whileTrue(new RunCommand(() -> m_hopperSub.runExpansionMotors(-1), m_hopperSub));
+    m_driverController.b().whileTrue(new RunCommand(() -> m_intakeSub.runIntake(0.2), m_intakeSub));
   }
 
   /**
