@@ -82,6 +82,7 @@ public final class Constants {
 
   public static final class OIConstants {
     public static final int kDriverControllerPort = 0;
+    public static final int kOperatorControllerPort = 1;
     public static final double kDriveDeadband = 0.05;
   }
 
@@ -138,7 +139,7 @@ public final class Constants {
     public static final int expansionMotorRightid = 10;
 
     public static final double hopperSpeed = 0.1;
-    public static final double indexerSpeed = 0.45;
+    public static final double hopperHoldVoltage = 0.1;
   }
 
   public static final class intakeConstants {

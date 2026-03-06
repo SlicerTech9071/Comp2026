@@ -19,6 +19,7 @@ import com.revrobotics.ResetMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ShooterConstants;
@@ -232,6 +233,11 @@ public class ShooterSubsystem extends SubsystemBase {
         double output = flyWheelPID.calculate(flyWheelEncoder.getVelocity()) + ShooterConstants.flyWheelfeedFoward;
         output = MathUtil.clamp(output, 0, 1);
         runFlyWheelMotor(output);
+    }
+
+    public void stopFlyWheel() {
+        flyWheelMotorLeft.set(0);
+        flyWheelMotorRight.set(0);
     }
 
     // //Manual Controll of Hood Motor

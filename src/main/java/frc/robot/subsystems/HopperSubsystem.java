@@ -62,14 +62,29 @@ public class HopperSubsystem extends SubsystemBase{
 
     }
 
-    public void runExpansionMotors(int foward) {
-        expansionMotorLeft.set(-1*hopperConstants.hopperSpeed * foward);
-        expansionMotorRight.set(hopperConstants.hopperSpeed * foward);
+    public void runExpansionMotors(boolean foward) {
+        int direction = foward ? 1 : -1;
+        expansionMotorLeft.set(-1*hopperConstants.hopperSpeed * direction);
+        expansionMotorRight.set(hopperConstants.hopperSpeed * direction);
     }
 
-    public void runIndexer() {
-        hopperIndexerMotorTop.set(hopperConstants.indexerSpeed);
-        hopperIndexerMotorBottom.set(-1*hopperConstants.indexerSpeed);
+    public void holdExpansionMotors(double voltage) {
+        expansionMotorLeft.setVoltage(voltage);
+        expansionMotorRight.setVoltage(voltage);
     }
 
+    public void runIndexer(double speed) {
+        hopperIndexerMotorTop.set(speed);
+        hopperIndexerMotorBottom.set(-1*speed);
+    }
+
+    public void stopIndexer() {
+        hopperIndexerMotorTop.set(0);
+        hopperIndexerMotorBottom.set(0);
+    }
+
+    public void stopExpansion() {
+        expansionMotorLeft.set(0);
+        expansionMotorRight.set(0);
+    }
 }

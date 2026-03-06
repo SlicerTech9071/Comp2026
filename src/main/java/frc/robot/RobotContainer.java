@@ -7,6 +7,9 @@ package frc.robot;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import frc.commands.ExpandTest;
+import frc.commands.HopperTelop;
+import frc.commands.ShooterTelop;
 import frc.robot.Constants.OIConstants;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.HopperSubsystem;
@@ -37,6 +40,7 @@ public class RobotContainer {
 
   // The driver's controller
   CommandXboxController m_driverController = new CommandXboxController(OIConstants.kDriverControllerPort);
+  CommandXboxController m_OperatorController = new CommandXboxController(OIConstants.kOperatorControllerPort);
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
@@ -48,6 +52,7 @@ public class RobotContainer {
 
     // Configure the button bindings
     configureButtonBindings();
+    configureOperator();
 
     // Configure default commands
     m_robotDrive.setDefaultCommand(
@@ -64,13 +69,14 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     m_driverController.x().whileTrue(new RunCommand(()->m_robotDrive.zeroHeading(), m_robotDrive));
-    m_driverController.leftTrigger().onTrue(new RunCommand(() -> m_shooterSub.runFlyWheelMotor(0.5), m_shooterSub));
-    m_driverController.rightTrigger().whileTrue(new RunCommand(() -> m_hopperSub.runIndexer(), m_hopperSub));
-    m_driverController.leftBumper().whileTrue(new RunCommand(() -> m_hopperSub.runExpansionMotors(1), m_hopperSub));
-    m_driverController.rightBumper().whileTrue(new RunCommand(() -> m_hopperSub.runExpansionMotors(-1), m_hopperSub));
-    m_driverController.b().whileTrue(new RunCommand(() -> m_intakeSub.runIntake(0.2), m_intakeSub));
   }
 
+  private void configureOperator() {
+    m_OperatorController.leftTrigger().whileTrue(new ShooterTelop(m_shooterSub, () -> 0.5));
+    m_OperatorController.rightTrigger().whileTrue(new HopperTelop(m_hopperSub, () -> 0.5));
+    m_OperatorController.rightBumper().whileTrue(new ExpandTest(m_hopperSub).withTimeout(1));
+    m_OperatorController.b().whileTrue(new RunCommand(() -> m_intakeSub.runIntake(0.2), m_intakeSub));
+  }
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
