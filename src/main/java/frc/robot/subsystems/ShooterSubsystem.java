@@ -8,7 +8,6 @@ import static edu.wpi.first.units.Units.Radians;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 
-import com.revrobotics.AbsoluteEncoder;
 import com.revrobotics.PersistMode;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
@@ -19,7 +18,6 @@ import com.revrobotics.ResetMode;
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import frc.robot.Constants.ShooterConstants;

@@ -1,17 +1,12 @@
-package frc.commands;
-
-import java.util.function.DoubleSupplier;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
-import frc.robot.Constants;
 import frc.robot.subsystems.HopperSubsystem;
 
-public class HopperTelop extends Command{
+public class ExpandTest extends Command{
     HopperSubsystem hopper;
-    DoubleSupplier indexerSpeed;
-    public HopperTelop(HopperSubsystem hopper, DoubleSupplier indexerSpeed){
+    public ExpandTest(HopperSubsystem hopper) {
         this.hopper = hopper;
-        this.indexerSpeed = indexerSpeed;
         addRequirements(hopper);
     }
 
@@ -20,14 +15,12 @@ public class HopperTelop extends Command{
 
     @Override
     public void execute() {
-        hopper.runIndexer(indexerSpeed.getAsDouble());
-        hopper.holdExpansionMotors(Constants.hopperConstants.hopperHoldVoltage);
+        hopper.runExpansionMotors(true);
     }
 
     @Override
     public void end(boolean interrupted) {
         hopper.stopExpansion();
-        hopper.stopIndexer();
     }
 
     @Override

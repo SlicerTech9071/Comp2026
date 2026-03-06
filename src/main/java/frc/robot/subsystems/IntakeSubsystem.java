@@ -1,6 +1,5 @@
 package frc.robot.subsystems;
 
-import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
@@ -28,5 +27,9 @@ public class IntakeSubsystem extends SubsystemBase{
 
     public void runIntake(double speed) {
         intakeMotor.set(-speed);
+    }
+
+    public void stopIntake() {
+        intakeMotor.set(0);
     }
 }
