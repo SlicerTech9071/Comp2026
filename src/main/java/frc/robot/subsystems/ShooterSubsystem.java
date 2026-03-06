@@ -35,7 +35,8 @@ import frc.robot.LimelightHelpers;
 //Theta is the angle that controls the rotating turret. Relative to the feild.
 //Alpha is the angle that controls the hood angle/launch angle.
 public class ShooterSubsystem extends SubsystemBase {
-    public SparkMax flyWheelMotor;
+    public SparkMax flyWheelMotorLeft;
+    public SparkMax flyWheelMotorRight;
     // public SparkMax turningMotor;
     // public SparkMax hoodMotor;
     public SparkMaxConfig flyWheelMotorConfig;
@@ -52,7 +53,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     private final AHRS m_gyro = new AHRS(NavXComType.kMXP_SPI);
     public ShooterSubsystem() {
-        flyWheelMotor = new SparkMax(ShooterConstants.flyWheelMotorid, MotorType.kBrushless);
+        flyWheelMotorLeft = new SparkMax(ShooterConstants.flyWheelMotorLeftid, MotorType.kBrushless);
+        flyWheelMotorRight = new SparkMax(ShooterConstants.flyWheelMotorRightid, MotorType.kBrushless);
         // turningMotor = new SparkMax(ShooterConstants.turningMotorid, MotorType.kBrushless);
         // hoodMotor = new SparkMax(ShooterConstants.hoodMotorid, MotorType.kBrushless);
         flyWheelMotorConfig = new SparkMaxConfig(); 
@@ -72,11 +74,12 @@ public class ShooterSubsystem extends SubsystemBase {
         // .idleMode(IdleMode.kBrake)
         // .smartCurrentLimit(50);
 
-        flyWheelMotor.configure(flyWheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        flyWheelMotorLeft.configure(flyWheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+        flyWheelMotorRight.configure(flyWheelMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         // turningMotor.configure(turningMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
         // hoodMotor.configure(hoodMotorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
-        flyWheelEncoder = flyWheelMotor.getEncoder();
+        flyWheelEncoder = flyWheelMotorLeft.getEncoder();
         // turningEncoder = turningMotor.getAbsoluteEncoder();
         // hoodMotorEncoder = hoodMotor.getEncoder();
 
@@ -87,6 +90,8 @@ public class ShooterSubsystem extends SubsystemBase {
         flyWheelPID.setTolerance(ShooterConstants.flyWheelError);
         // turningPID.setTolerance(ShooterConstants.turningError);
         // hoodMotorPID.setTolerance(ShooterConstants.hoodError);
+
+        SmartDashboard.putData("FlyWheelPid",flyWheelPID);
     }
 
     //Finds the distance away from and fidicual the limelight finds
@@ -213,7 +218,8 @@ public class ShooterSubsystem extends SubsystemBase {
 
     //Manual control of FlyWheel Motor
     public void runFlyWheelMotor(double speed) {
-        flyWheelMotor.set(speed);
+        flyWheelMotorLeft.set(speed);
+        flyWheelMotorRight.set(-speed);
     }
 
     //PID control of FlyWheel Motor

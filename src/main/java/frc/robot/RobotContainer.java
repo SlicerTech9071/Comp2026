@@ -64,7 +64,7 @@ public class RobotContainer {
 
   private void configureButtonBindings() {
     m_driverController.x().whileTrue(new RunCommand(()->m_robotDrive.zeroHeading(), m_robotDrive));
-    m_driverController.leftTrigger().whileTrue(new RunCommand(() -> m_shooterSub.runFlyWheelMotor(0.2), m_shooterSub));
+    m_driverController.leftTrigger().onTrue(new RunCommand(() -> m_shooterSub.runFlyWheelMotor(0.5), m_shooterSub));
     m_driverController.rightTrigger().whileTrue(new RunCommand(() -> m_hopperSub.runIndexer(), m_hopperSub));
     m_driverController.leftBumper().whileTrue(new RunCommand(() -> m_hopperSub.runExpansionMotors(1), m_hopperSub));
     m_driverController.rightBumper().whileTrue(new RunCommand(() -> m_hopperSub.runExpansionMotors(-1), m_hopperSub));

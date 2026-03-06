@@ -105,7 +105,8 @@ public final class Constants {
   }
 
   public static final class ShooterConstants {
-    public static final int flyWheelMotorid = 1;
+    public static final int flyWheelMotorLeftid = 13;
+    public static final int flyWheelMotorRightid = 14;
     public static final int turningMotorid = 2;
     public static final int hoodMotorid = 1;
 
@@ -130,19 +131,18 @@ public final class Constants {
     public static final double ballVelo = 1;
   }
 
-    public static final class intakeConstants {
-    public static final int intakeMotorid = 11;
-    public static final int pivotMotorid = 12;
-  }
-
   public static final class hopperConstants {
-    public static final int indexerMotorTopid = 0;
-    public static final int indexerMotorBottomid = 0;
-    public static final int expansionMotorLeftid = 2;
-    public static final int expansionMotorRightid = 3;
+    public static final int indexerMotorTopid = 12;
+    public static final int indexerMotorBottomid = 11;
+    public static final int expansionMotorLeftid = 9;
+    public static final int expansionMotorRightid = 10;
 
     public static final double hopperSpeed = 0.1;
-    public static final double indexerSpeed = 0.1;
+    public static final double indexerSpeed = 0.45;
+  }
+
+  public static final class intakeConstants {
+    public static final int intakeMotorid = 15;
   }
 
   public static final class AprilTags {
